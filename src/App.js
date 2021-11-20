@@ -1,25 +1,40 @@
-import logo from './logo.svg';
 import './App.css';
+import {useSelector, useDispatch} from "react-redux";
+import {addTask, deleteTask} from "./actions/todo";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = () => {
+    const tasks = useSelector((state => state.todo));
+    const dispatch = useDispatch()
+    const addData = (event) => {
+        event.preventDefault();
+        dispatch(addTask(event.target.task.value))
+    }
+
+    const removeTask = (id) => {
+        dispatch(deleteTask(id))
+    }
+
+    return (
+        <div className="App">
+            <header className="App-header">
+                <form onSubmit={(event => {
+                    addData(event)
+                })}>
+                    <input type={'text'} name={'task'}/>
+                    <button> ADD</button>
+                </form>
+                <div>
+                    <ul>
+                        {tasks.map((item) => {
+                            return <li key={item.id}>{item.value}
+                                <button onClick={() => removeTask(item.id)}>Delete</button>
+                            </li>
+                        })}
+                    </ul>
+                </div>
+            </header>
+        </div>
+    );
 }
 
 export default App;
